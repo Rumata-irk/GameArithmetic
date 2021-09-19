@@ -3,7 +3,10 @@ package GameArithmetic.Controllers;
 import GameArithmetic.GameOperations;
 import GameArithmetic.Main;
 import GameArithmetic.SecondPage;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,8 +17,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class ThirdPageController {
+
+    Timeline timeline;
+    LocalTime time;
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("mm:ss");
+
     @FXML
     private AnchorPane anchor;
 
@@ -52,10 +62,15 @@ public class ThirdPageController {
     private int countRound = 1;
     private int countWin = 0, countLose = 0;
     private String checkResult;
-    private long time = System.currentTimeMillis();
+
 
     @FXML
     void initialize() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(1000), ae -> incrementTime()));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        time = LocalTime.parse("00:00");
+        label_time.setText(time.format(dtf));
+        timeline.play();
 
 
         anchor.setOnKeyPressed(event -> {
@@ -131,11 +146,11 @@ public class ThirdPageController {
                     checkResult();
                     game();
                 } else if (countRound == 11) {
+                    timeline.stop();
                     checkResult();
                     setCountWin();
                     text_answer.setText("");
                     checkWin();
-                    label_time.setText(new SimpleDateFormat("mm:ss").format(System.currentTimeMillis() - time));
                     btn_check.setDisable(true);
                     text_answer.setDisable(true);
                     text_round.setFocusTraversable(true);
@@ -149,18 +164,20 @@ public class ThirdPageController {
             countRound = 1;
             countWin = 0;
             countLose = 0;
-            time = System.currentTimeMillis();
+            timeline.stop();
+            time = LocalTime.parse("00:00");
+            label_time.setText(time.format(dtf));
+            timeline.play();
+
             game();
             setCountWin();
             text_answer.setText("");
             label_info.setText("");
             label_info.setStyle("-fx-text-fill: black");
-            label_time.setText("");
+
             btn_check.setDisable(false);
             text_answer.setDisable(false);
             focusTextAnswer();
-
-
 
         });
 
@@ -242,5 +259,10 @@ public class ThirdPageController {
                 text_answer.requestFocus();
             }
         });
+    }
+
+    private void incrementTime() {
+        time = time.plusSeconds(1);
+        label_time.setText(time.format(dtf));
     }
 }

@@ -1,5 +1,6 @@
 package GameArithmetic.Controllers;
 
+import GameArithmetic.BestTime;
 import GameArithmetic.GameOperations;
 import GameArithmetic.Main;
 import GameArithmetic.SecondPage;
@@ -59,13 +60,22 @@ public class ThirdPageController {
     @FXML
     private Label label_time;
 
+    @FXML
+    private Label best_time;
+
     private int countRound = 1;
     private int countWin = 0, countLose = 0;
     private String checkResult;
 
+    BestTime bt = new BestTime();
+
 
     @FXML
     void initialize() {
+
+        bt.createMap();
+        bt.keySelection();
+        best_time.setText(bt.bestTimeFirst());
         timeline = new Timeline(new KeyFrame(Duration.millis(1000), ae -> incrementTime()));
         timeline.setCycleCount(Animation.INDEFINITE);
         time = LocalTime.parse("00:00");
@@ -246,6 +256,9 @@ public class ThirdPageController {
         if (countWin > countLose) {
             label_info.setStyle("-fx-text-fill: green");
             label_info.setText("Congratulations, you win!");
+            bt.checkTime(time);
+            System.out.println("Label_time:" + time);
+            best_time.setText(BestTime.bestTime.format(dtf));
         } else {
             label_info.setStyle("-fx-text-fill: red");
             label_info.setText("Sorry, you lose!");
@@ -253,12 +266,7 @@ public class ThirdPageController {
     }
 
     private void focusTextAnswer() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                text_answer.requestFocus();
-            }
-        });
+        Platform.runLater(() -> text_answer.requestFocus());
     }
 
     private void incrementTime() {

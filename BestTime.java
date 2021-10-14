@@ -13,9 +13,10 @@ import java.util.Set;
 
 public class BestTime {
 
-    private final String directory = System.getProperty("user.home");
+//    private final String directory = System.getProperty("user.home");
     private final String fileName = "scores.txt";
-    private final String absolutePath = directory + File.separator + fileName;
+//    private final String absolutePath = directory + File.separator + fileName;
+    private final String absolutePath = fileName;
     private HashMap<String, String> hashMapFromFile = new HashMap<>();
 
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("mm:ss");
